@@ -6,7 +6,7 @@ public class Disciplina {
 	private String diaSemana;
 	private String horarioInicio;
 	private double cargaHoraria;
-	private int codCurso;
+	private int codCursoDisciplina;
 	private static int codProcesso;
 
 	public Disciplina() {
@@ -21,7 +21,7 @@ public class Disciplina {
 		this.diaSemana = diaSemana;
 		this.horarioInicio = horarioInicio;
 		this.cargaHoraria = cargaHoraria;
-		this.codCurso = codCurso;
+		this.codCursoDisciplina = codCurso;
 	}
 
 	public int getCodigo() {
@@ -64,12 +64,12 @@ public class Disciplina {
 		this.cargaHoraria = cargaHoraria;
 	}
 
-	public int getCodCurso() {
-		return codCurso;
+	public int getCodCursoDisciplina() {
+		return codCursoDisciplina;
 	}
 
-	public void setCodCurso(int codCurso) {
-		this.codCurso = codCurso;
+	public void setCodCursoDisciplina(int codCurso) {
+		this.codCursoDisciplina = codCurso;
 	}
 
 	public int getCodProcesso() {
@@ -78,8 +78,8 @@ public class Disciplina {
 
 	@Override
 	public String toString() {
-		return "[" + codigo + " | " + nome + " | " + diaSemana + " | " + horarioInicio + " | " + cargaHoraria + " | "
-				+ codCurso + " | " + codProcesso + "]";
+		return "[" + codigo + " | " + nome + " | " + diaSemana + " | " + horarioInicio + " | " + cargaHoraria + " hrs/aula | Curso "
+				+ codCursoDisciplina + " | " + codProcesso + "]";
 
 	}
 }
