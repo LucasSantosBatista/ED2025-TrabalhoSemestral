@@ -38,13 +38,11 @@ public class ProcessosAtivosController implements ActionListener {
 			ProfessorController professorController = new ProfessorController();
 			InscricoesController inscricaoController = new InscricoesController();
 
-			// Listas completas
 			ListaEncadeada<Curso> cursos = cursoController.listarCursos();
 			ListaEncadeada<Disciplina> disciplinas = disciplinaController.listarDisciplinas();
 			ListaEncadeada<Professor> professores = professorController.listarProfessores();
 			ListaEncadeada<Inscricao> inscricoes = inscricaoController.listarInscricoes();
 
-			// Vetor de listas para disciplinas por curso
 			@SuppressWarnings("unchecked")
 			ListaEncadeada<Disciplina>[] vetorDisciplinasPorCurso = new ListaEncadeada[cursos.size()];
 
@@ -59,7 +57,6 @@ public class ProcessosAtivosController implements ActionListener {
 				}
 			}
 
-			// Vetor de listas para professores por disciplina
 			@SuppressWarnings("unchecked")
 			ListaEncadeada<Professor>[] vetorProfessoresPorDisciplina = new ListaEncadeada[disciplinas.size()];
 
@@ -73,7 +70,7 @@ public class ProcessosAtivosController implements ActionListener {
 					if (inscr.getCodigoDisciplina() == disciplina.getCodigo()) {
 						Long cpfProfessorInscricao = inscr.getCpfProfessor();
 
-						// Verifica se o professor já foi adicionado na lista da disciplina
+			
 						boolean professorJaAdicionado = false;
 						for (int x = 0; x < vetorProfessoresPorDisciplina[i].size(); x++) {
 							Professor pExistente = vetorProfessoresPorDisciplina[i].get(x);
@@ -84,7 +81,7 @@ public class ProcessosAtivosController implements ActionListener {
 						}
 
 						if (!professorJaAdicionado) {
-							// Busca o professor na lista geral pelo CPF
+	
 							for (int k = 0; k < professores.size(); k++) {
 								Professor prof = professores.get(k);
 								if (prof.getCPF() != 0 && prof.getCPF() == cpfProfessorInscricao) {
@@ -97,7 +94,7 @@ public class ProcessosAtivosController implements ActionListener {
 				}
 			}
 
-			// Monta texto final para JTextArea
+
 			StringBuilder sb = new StringBuilder();
 
 			for (int i = 0; i < cursos.size(); i++) {
