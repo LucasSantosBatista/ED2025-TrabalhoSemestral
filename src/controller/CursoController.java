@@ -17,6 +17,7 @@ import br.lucassbatista.ed.FilaDinamica;
 import br.lucassbatista.ed.ListaEncadeada;
 import model.Curso;
 import model.Disciplina;
+import view.Tela;
 
 public class CursoController implements ActionListener {
 	private JTextField txtCodigoCurso;
@@ -46,12 +47,36 @@ public class CursoController implements ActionListener {
 		String cmd = e.getActionCommand();
 		if (cmd.equals("Adicionar Novo Curso")) {
 			adicionarCurso();
+
+			try {
+				new Tela().atualizarComboBox();
+			} catch (Exception e1) {
+				e1.printStackTrace();
+			}
+
 		} else if (cmd.equals("Atualizar Curso")) {
 			atualizarCurso();
+
+			try {
+				new Tela().atualizarComboBox();
+			} catch (Exception e1) {
+				e1.printStackTrace();
+			}
+			limpaCampos();
 		} else if (cmd.equals("Remover Curso")) {
 			removerCurso();
+
+			try {
+				new Tela().atualizarComboBox();
+
+			} catch (Exception e1) {
+				e1.printStackTrace();
+			}
+			limpaCampos();
 		} else if (cmd.equals("Consultar por Código")) {
 			consultarCursoPorCodigo();
+
+			limpaCampos();
 		}
 	}
 
@@ -92,8 +117,6 @@ public class CursoController implements ActionListener {
 
 			txaTabelaCurso.setText("");
 			txaTabelaCurso.setText("Curso criado com sucesso! \n" + novoCurso.toString());
-
-			limpaCampos();
 
 		} catch (Exception e) {
 			txaTabelaCurso.setText("");
@@ -162,7 +185,6 @@ public class CursoController implements ActionListener {
 				txaTabelaCurso.setText("");
 				txaTabelaCurso.setText("Curso atualizado com sucesso! \n" + novoCurso.toString());
 
-				limpaCampos();
 			} else {
 				txaTabelaCurso.setText("");
 				txaTabelaCurso.setText("Operação de atualização interrompida!");
@@ -230,25 +252,22 @@ public class CursoController implements ActionListener {
 				txaTabelaCurso.setText("");
 				txaTabelaCurso.setText("Curso removido com sucesso! \n" + c.toString());
 
-				limpaCampos();
-
 				ListaEncadeada<Disciplina> listaDisciplinasApagar = new DisciplinaController().listarDisciplinas();
 				while (!listaDisciplinasApagar.isEmpty()) {
 					Disciplina d = listaDisciplinasApagar.get(0);
 					if (c.getCodigo() == d.getCodCursoDisciplina()) {
 						JTextField CodigoDisciplina = new JTextField(String.valueOf(d.getCodigo()));
 						DisciplinaController disciplinaController = new DisciplinaController(CodigoDisciplina,
-								new JTextArea(), c);
+								new JTextArea());
 
 						disciplinaController.actionPerformed(
 								new ActionEvent(this, ActionEvent.ACTION_PERFORMED, "Remover Disciplina"));
-					} else {
-						listaDisciplinasApagar.removeFirst();
 					}
+					listaDisciplinasApagar.removeFirst();
 				}
 
 			} else {
-				limpaCampos();
+
 				txaTabelaCurso.setText("");
 				txaTabelaCurso.setText("Operação de exclusão interrompida!");
 			}
@@ -285,7 +304,6 @@ public class CursoController implements ActionListener {
 				throw new Exception("Não foi encontrado nenhum curso com o código informado!");
 			}
 
-			limpaCampos();
 		} catch (Exception e) {
 			txaTabelaCurso.setText("");
 			txaTabelaCurso.setText(e.getMessage());

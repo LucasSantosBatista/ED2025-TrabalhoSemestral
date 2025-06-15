@@ -17,8 +17,8 @@ import javax.swing.JTextField;
 
 import br.lucassbatista.ed.FilaDinamica;
 import br.lucassbatista.ed.ListaEncadeada;
-import model.Inscricao;
 import model.Professor;
+import view.Tela;
 
 public class ProfessorController implements ActionListener {
 	private JTextField txtCPFProfessor;
@@ -57,12 +57,39 @@ public class ProfessorController implements ActionListener {
 		String cmd = e.getActionCommand();
 		if (cmd.equals("Adicionar Novo Professor")) {
 			adicionarProfessor();
+
+			try {
+				new Tela().atualizarComboBox();
+				limpaCampos();
+			} catch (Exception e1) {
+			}
+
 		} else if (cmd.equals("Atualizar Professor")) {
 			atualizarProfessor();
+
+			try {
+				new Tela().atualizarComboBox();
+				limpaCampos();
+			} catch (Exception e1) {
+			}
+
 		} else if (cmd.equals("Remover Professor")) {
 			removerProfessor();
+
+			try {
+				new Tela().atualizarComboBox();
+				if (precisaConfirmacao == true)
+					limpaCampos();
+			} catch (Exception e1) {
+			}
+
 		} else if (cmd.equals("Consultar por CPF")) {
 			consultarProfessorPorCPF();
+
+			try {
+				limpaCampos();
+			} catch (Exception e1) {
+			}
 		}
 	}
 
@@ -107,8 +134,6 @@ public class ProfessorController implements ActionListener {
 			txaTabelaProfessores.setText("");
 			txaTabelaProfessores.setText("Professor cadastrado com sucesso! \n" + novoProfessor.toString());
 
-			limpaCampos();
-			atualizaComboBox();
 		} catch (Exception e) {
 			txaTabelaProfessores.setText("");
 			txaTabelaProfessores.setText(e.getMessage());
@@ -181,8 +206,6 @@ public class ProfessorController implements ActionListener {
 				txaTabelaProfessores
 						.setText("Dados do Professor atualizado com sucesso! \n" + novoProfessor.toString());
 
-				limpaCampos();
-				atualizaComboBox();
 			} else {
 				txaTabelaProfessores.setText("");
 				txaTabelaProfessores.setText("Operação de atualização interrompida!");
@@ -258,27 +281,9 @@ public class ProfessorController implements ActionListener {
 				txaTabelaProfessores.setText("");
 				txaTabelaProfessores.setText("Professor removido do cadastro com sucesso! \n" + p.toString());
 
-				limpaCampos();
-				atualizaComboBox();
 				
-				if (precisaConfirmacao == false) {
-					ListaEncadeada<Inscricao> listaInscricoesApagar = new InscricoesController().listarInscricoes();
-					while (!listaInscricoesApagar.isEmpty()) {
-						Inscricao insc = listaInscricoesApagar.get(0);
-						if (insc.getCpfProfessor() == p.getCPF()) {
-							JTextField txtCodigoInscricao = new JTextField(String.valueOf(insc.getCodigoInscricao()));
-							InscricoesController inscricoesController = new InscricoesController(txtCodigoInscricao,
-									new JTextArea());
-
-							inscricoesController.actionPerformed(
-									new ActionEvent(this, ActionEvent.ACTION_PERFORMED, "Remover Inscrição"));
-						} else {
-							listaInscricoesApagar.removeFirst();
-						}
-					}
-				}
 			} else {
-				limpaCampos();
+
 				txaTabelaProfessores.setText("");
 				txaTabelaProfessores.setText("Operação de exclusão interrompida!");
 			}
@@ -315,7 +320,6 @@ public class ProfessorController implements ActionListener {
 				throw new Exception("Não foi encontrado nenhum Professor com o CPF informado!");
 			}
 
-			limpaCampos();
 		} catch (Exception e) {
 			txaTabelaProfessores.setText("");
 			txaTabelaProfessores.setText(e.getMessage());
@@ -452,9 +456,13 @@ public class ProfessorController implements ActionListener {
 
 	}
 
-	public void atualizaComboBox() throws Exception {
-		String[] atualizaAreas = new CursoController().retornaAreas();
-		DefaultComboBoxModel<String> attComboBox = new DefaultComboBoxModel<>(atualizaAreas);
-		cbxAreaProfessor.setModel(attComboBox);
+	public void atualizaComboBox() {
+		try {
+			String[] areas = new CursoController().retornaAreas();
+			DefaultComboBoxModel<String> model = new DefaultComboBoxModel<>(areas);
+			cbxAreaProfessor.setModel(model);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 }

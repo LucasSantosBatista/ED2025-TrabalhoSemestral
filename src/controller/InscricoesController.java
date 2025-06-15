@@ -19,6 +19,7 @@ import br.lucassbatista.ed.ListaEncadeada;
 import model.Disciplina;
 import model.Inscricao;
 import model.Professor;
+import view.Tela;
 
 public class InscricoesController implements ActionListener {
 	private JTextField txtCodigoInscricao;
@@ -53,12 +54,39 @@ public class InscricoesController implements ActionListener {
 		String cmd = e.getActionCommand();
 		if (cmd.equals("Adicionar Inscricao")) {
 			adicionarInscricao();
+
+			try {
+				new Tela().atualizarComboBox();
+				limpaCampos();
+			} catch (Exception e1) {
+			}
+
 		} else if (cmd.equals("Atualizar Inscrição")) {
 			atualizarInscricao();
+
+			try {
+				new Tela().atualizarComboBox();
+				limpaCampos();
+			} catch (Exception e1) {
+			}
+
 		} else if (cmd.equals("Remover Inscrição")) {
 			removerInscricao();
+
+			try {
+				new Tela().atualizarComboBox();
+				if (precisaConfirmacao == true)
+					limpaCampos();
+			} catch (Exception e1) {
+			}
+
 		} else if (cmd.equals("Consultar por Codigo")) {
 			consultarInscricoes();
+
+			try {
+				limpaCampos();
+			} catch (Exception e1) {
+			}
 		}
 	}
 
@@ -102,8 +130,6 @@ public class InscricoesController implements ActionListener {
 			txaTabelaInscricoes.setText("");
 			txaTabelaInscricoes.setText("Inscrição feita com sucesso! \n" + novaInscricao.toString());
 
-			limpaCampos();
-			atualizaComboBox();
 		} catch (Exception e) {
 			txaTabelaInscricoes.setText("");
 			txaTabelaInscricoes.setText(e.getMessage());
@@ -175,8 +201,6 @@ public class InscricoesController implements ActionListener {
 				txaTabelaInscricoes
 						.setText("Dados da inscrição atualizadas com sucesso! \n" + novaInscricao.toString());
 
-				limpaCampos();
-				atualizaComboBox();
 			} else {
 				txaTabelaInscricoes.setText("");
 				txaTabelaInscricoes.setText("Operação de atualização interrompida!");
@@ -248,11 +272,26 @@ public class InscricoesController implements ActionListener {
 
 				txaTabelaInscricoes.setText("");
 				txaTabelaInscricoes.setText("Inscrição removida com sucesso! \n" + insc.toString());
+				
+				if (precisaConfirmacao == false) {
+					ListaEncadeada<Professor> listaProfessoresApagar = new ProfessorController().listarProfessores();
+					while (!listaProfessoresApagar.isEmpty()) {
+						Professor p = listaProfessoresApagar.get(0);
+						if (insc.getCpfProfessor() == p.getCPF()) {
+							JTextField txtCPFProfessor = new JTextField(String.valueOf(p.getCPF()));
+							ProfessorController professorController = new ProfessorController(txtCPFProfessor,
+									new JTextArea());
 
-				limpaCampos();
-				atualizaComboBox();
+							professorController.actionPerformed(
+									new ActionEvent(this, ActionEvent.ACTION_PERFORMED, "Remover Professor"));
+						} else {
+							listaProfessoresApagar.removeFirst();
+						}
+					}
+				}
+
 			} else {
-				limpaCampos();
+
 				txaTabelaInscricoes.setText("");
 				txaTabelaInscricoes.setText("Operação de exclusão interrompida!");
 			}
@@ -312,7 +351,6 @@ public class InscricoesController implements ActionListener {
 				throw new Exception("Não foi encontrada uma inscrição com o código informado!");
 			}
 
-			limpaCampos();
 		} catch (Exception e) {
 			txaTabelaInscricoes.setText("");
 			txaTabelaInscricoes.setText(e.getMessage());
@@ -415,13 +453,18 @@ public class InscricoesController implements ActionListener {
 		cbxCodigoDisciplina.setSelectedIndex(0);
 	}
 
-	public void atualizaComboBox() throws Exception {
-		String[] atualizaProfessores = new ProfessorController().retornaProfessores();
-		DefaultComboBoxModel<String> attComboBoxProf = new DefaultComboBoxModel<>(atualizaProfessores);
-		cbxCPFProfessor.setModel(attComboBoxProf);
+	public void atualizaComboBox() {
+		try {
+			String[] professores = new ProfessorController().retornaProfessores();
+			DefaultComboBoxModel<String> modelProfessores = new DefaultComboBoxModel<>(professores);
+			cbxCPFProfessor.setModel(modelProfessores);
 
-		String[] atualizaDisciplinas = new DisciplinaController().retornaDisciplinas();
-		DefaultComboBoxModel<String> attComboBoxDisc = new DefaultComboBoxModel<>(atualizaDisciplinas);
-		cbxCodigoDisciplina.setModel(attComboBoxDisc);
+			String[] disciplinas = new DisciplinaController().retornaDisciplinas();
+			DefaultComboBoxModel<String> modelDisciplinas = new DefaultComboBoxModel<>(disciplinas);
+			cbxCodigoDisciplina.setModel(modelDisciplinas);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 }

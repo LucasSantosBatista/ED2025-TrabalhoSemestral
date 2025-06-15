@@ -34,6 +34,10 @@ public class Tela extends JFrame {
 	private JTextField txtNomeProfessor;
 	private JTextField txtPontuacaoProfessor;
 	private JTextField txtCodigoInscricao;
+	private DisciplinaController disciplinaController;
+	private ProfessorController professorController;
+	private InscricoesController inscricoesController;
+	private ProcessosAtivosController processosAtivosController;
 
 	/**
 	 * Launch the application.
@@ -84,7 +88,7 @@ public class Tela extends JFrame {
 		lblCodigoCurso.setBounds(25, 93, 120, 14);
 		tabCursos.add(lblCodigoCurso);
 
-		JLabel lblNomeCurso = new JLabel("Nome: ");
+		JLabel lblNomeCurso = new JLabel("Nome do curso: ");
 		lblNomeCurso.setHorizontalAlignment(SwingConstants.RIGHT);
 		lblNomeCurso.setBounds(25, 136, 120, 14);
 		tabCursos.add(lblNomeCurso);
@@ -143,7 +147,7 @@ public class Tela extends JFrame {
 		lblCodigoDisciplina.setBounds(10, 60, 122, 14);
 		tabDisciplinas.add(lblCodigoDisciplina);
 
-		JLabel lblNomeDisciplina = new JLabel("Nome: ");
+		JLabel lblNomeDisciplina = new JLabel("Nome da disciplina: ");
 		lblNomeDisciplina.setHorizontalAlignment(SwingConstants.RIGHT);
 		lblNomeDisciplina.setBounds(10, 99, 122, 14);
 		tabDisciplinas.add(lblNomeDisciplina);
@@ -207,7 +211,7 @@ public class Tela extends JFrame {
 		cbxHorarioInicio.setBounds(149, 173, 233, 22);
 		tabDisciplinas.add(cbxHorarioInicio);
 
-		JComboBox<String> cbxCargaHoraria = new JComboBox<>(new String[] { "", "1.4", "3.5", "5.0", "19:20" });
+		JComboBox<String> cbxCargaHoraria = new JComboBox<>(new String[] { "", "1.4", "3.5", "5.0" });
 		cbxCargaHoraria.setBounds(149, 212, 140, 22);
 		tabDisciplinas.add(cbxCargaHoraria);
 
@@ -233,7 +237,7 @@ public class Tela extends JFrame {
 		lblCPFProfessor.setBounds(10, 95, 133, 21);
 		tabProfessores.add(lblCPFProfessor);
 
-		JLabel lblNomeProfessor = new JLabel("Nome completo: ");
+		JLabel lblNomeProfessor = new JLabel("Nome do professor:");
 		lblNomeProfessor.setHorizontalAlignment(SwingConstants.RIGHT);
 		lblNomeProfessor.setBounds(10, 142, 133, 21);
 		tabProfessores.add(lblNomeProfessor);
@@ -353,8 +357,7 @@ public class Tela extends JFrame {
 		JTextArea txaTabelaProcessosAtivos = new JTextArea();
 
 		JScrollPane scrollPane = new JScrollPane(txaTabelaProcessosAtivos);
-		scrollPane.setBounds(10, 85, 599, 317); // mesmo tamanho e posição do JTextArea anterior
-
+		scrollPane.setBounds(10, 85, 599, 317);
 		tabProcessosAtivos.add(scrollPane);
 
 		JLabel lblProcessosAtivos = new JLabel("Processos Ativos");
@@ -373,7 +376,7 @@ public class Tela extends JFrame {
 		btnRemoverCurso.addActionListener(cursoController);
 		btnConsultarCursoCod.addActionListener(cursoController);
 
-		DisciplinaController disciplinaController = new DisciplinaController(txtCodigoDisciplina, txtNomeDisciplina,
+		disciplinaController = new DisciplinaController(txtCodigoDisciplina, txtNomeDisciplina,
 				cbxDiaSemanaDisciplina, cbxHorarioInicio, cbxCargaHoraria, cbxCodigoCursoDisciplina,
 				txaTabelaDisciplinas);
 		btnInserirDisciplina.addActionListener(disciplinaController);
@@ -381,22 +384,28 @@ public class Tela extends JFrame {
 		btnRemoverDisciplina.addActionListener(disciplinaController);
 		btnConsultarDisciplinaCod.addActionListener(disciplinaController);
 
-		ProfessorController professorController = new ProfessorController(txtCPFProfessor, txtNomeProfessor,
+		professorController = new ProfessorController(txtCPFProfessor, txtNomeProfessor,
 				cbxAreaProfessor, txtPontuacaoProfessor, txaTabelaProfessores);
 		btnInserirProfessor.addActionListener(professorController);
 		btnAtualizarProfessor.addActionListener(professorController);
 		btnRemoverProfessor.addActionListener(professorController);
 		btnConsultarProfessorCPF.addActionListener(professorController);
 
-		InscricoesController inscricoesController = new InscricoesController(txtCodigoInscricao,
+		inscricoesController = new InscricoesController(txtCodigoInscricao,
 				cbxDisciplinasInscricao, cbxProfessoresInscricao, txaTabelaInscricoes);
 		btnInserirInscricao.addActionListener(inscricoesController);
 		btnAtualizarInscricao.addActionListener(inscricoesController);
 		btnRemoverInscricao.addActionListener(inscricoesController);
 		btnConsultarProfessorInscricao.addActionListener(inscricoesController);
 
-		ProcessosAtivosController processosAtivosController = new ProcessosAtivosController(txaTabelaProcessosAtivos);
+		processosAtivosController = new ProcessosAtivosController(txaTabelaProcessosAtivos);
 		btnAtualizarProcessosAtivos.addActionListener(processosAtivosController);
 
+	}
+
+	public void atualizarComboBox() {
+		disciplinaController.atualizaComboBox();
+		professorController.atualizaComboBox();
+		inscricoesController.atualizaComboBox();
 	}
 }

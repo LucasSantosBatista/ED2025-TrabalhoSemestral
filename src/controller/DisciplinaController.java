@@ -17,9 +17,9 @@ import javax.swing.JTextField;
 
 import br.lucassbatista.ed.FilaDinamica;
 import br.lucassbatista.ed.ListaEncadeada;
-import model.Curso;
 import model.Disciplina;
-import model.Professor;
+import model.Inscricao;
+import view.Tela;
 
 public class DisciplinaController implements ActionListener {
 	private JTextField txtCodigoDisciplina;
@@ -33,16 +33,14 @@ public class DisciplinaController implements ActionListener {
 			+ File.separator;
 	private String nomeArquivo = "disciplinas.csv";
 	private boolean precisaConfirmacao = true;
-	private Curso cx;
 
 	public DisciplinaController() {
 		super();
 	}
 
-	public DisciplinaController(JTextField txtCodigoDisciplina, JTextArea txaTabelaDisciplinas, Curso c) {
+	public DisciplinaController(JTextField txtCodigoDisciplina, JTextArea txaTabelaDisciplinas) {
 		this.txtCodigoDisciplina = txtCodigoDisciplina;
 		this.txaTabelaDisciplinas = txaTabelaDisciplinas;
-		cx = c;
 		this.precisaConfirmacao = false;
 	}
 
@@ -65,12 +63,37 @@ public class DisciplinaController implements ActionListener {
 		String cmd = e.getActionCommand();
 		if (cmd.equals("Adicionar Nova Disciplina")) {
 			adicionarDisciplina();
+
+			try {
+				new Tela().atualizarComboBox();
+			} catch (Exception e1) {
+				e1.printStackTrace();
+			}
+			limpaCampos();
 		} else if (cmd.equals("Atualizar Disciplina")) {
 			atualizarDisciplina();
+
+			try {
+				new Tela().atualizarComboBox();
+			} catch (Exception e1) {
+				e1.printStackTrace();
+			}
+			limpaCampos();
 		} else if (cmd.equals("Remover Disciplina")) {
 			removerDisciplina();
+
+			try {
+				new Tela().atualizarComboBox();
+				if (precisaConfirmacao == true)
+					limpaCampos();
+			} catch (Exception e1) {
+				e1.printStackTrace();
+			}
+
 		} else if (cmd.equals("Consultar por Código")) {
 			consultarDisciplinaPorCodigo();
+
+			limpaCampos();
 		}
 	}
 
@@ -123,8 +146,6 @@ public class DisciplinaController implements ActionListener {
 			txaTabelaDisciplinas.setText("");
 			txaTabelaDisciplinas.setText("Disciplina criada com sucesso! \n" + novaDisciplina.toString());
 
-			limpaCampos();
-			atualizaComboBox();
 		} catch (Exception e) {
 			txaTabelaDisciplinas.setText("");
 			txaTabelaDisciplinas.setText(e.getMessage());
@@ -203,8 +224,6 @@ public class DisciplinaController implements ActionListener {
 				txaTabelaDisciplinas.setText("");
 				txaTabelaDisciplinas.setText("Disciplina atualizada com sucesso! \n" + novaDisciplina.toString());
 
-				limpaCampos();
-				atualizaComboBox();
 			} else {
 				txaTabelaDisciplinas.setText("");
 				txaTabelaDisciplinas.setText("Operação de atualização interrompida!");
@@ -257,7 +276,8 @@ public class DisciplinaController implements ActionListener {
 				File arq = new File(caminho, nomeArquivo);
 
 				StringBuilder conteudo = new StringBuilder();
-				conteudo.append("Codigo;Nome do Curso;Area de Conhecimento\n");
+				conteudo.append(
+						"Codigo;Nome da Disciplina;Dia da Semana;Horario de Inicio;Carga Horaria (hrs/aula);Codigo do Curso\n");
 
 				while (!lista.isEmpty()) {
 					Disciplina remove = lista.get(0);
@@ -284,27 +304,24 @@ public class DisciplinaController implements ActionListener {
 				txaTabelaDisciplinas.setText("");
 				txaTabelaDisciplinas.setText("Curso removido com sucesso! \n" + d.toString());
 
-				limpaCampos();
-				atualizaComboBox();
-
 				if (precisaConfirmacao == false) {
-					ListaEncadeada<Professor> listaProfessoresApagar = new ProfessorController().listarProfessores();
-					while (!listaProfessoresApagar.isEmpty()) {
-						Professor p = listaProfessoresApagar.get(0);
-						if (cx.getArea() == p.getArea()) {
-							JTextField CPFProfessor = new JTextField(String.valueOf(p.getCPF()));
-							ProfessorController professorController = new ProfessorController(CPFProfessor,
+					ListaEncadeada<Inscricao> listaInscricoesApagar = new InscricoesController().listarInscricoes();
+					while (!listaInscricoesApagar.isEmpty()) {
+						Inscricao insc = listaInscricoesApagar.get(0);
+						if (insc.getCodigoDisciplina() == d.getCodigo()) {
+							JTextField txtCodigoInscricao = new JTextField(String.valueOf(insc.getCodigoInscricao()));
+							InscricoesController inscricoesController = new InscricoesController(txtCodigoInscricao,
 									new JTextArea());
 
-							professorController.actionPerformed(
-									new ActionEvent(this, ActionEvent.ACTION_PERFORMED, "Remover Professor"));
+							inscricoesController.actionPerformed(
+									new ActionEvent(this, ActionEvent.ACTION_PERFORMED, "Remover Inscrição"));
 						} else {
-							listaProfessoresApagar.removeFirst();
+							listaInscricoesApagar.removeFirst();
 						}
 					}
 				}
 			} else {
-				limpaCampos();
+
 				txaTabelaDisciplinas.setText("");
 				txaTabelaDisciplinas.setText("Operação de exclusão interrompida!");
 			}
@@ -342,7 +359,6 @@ public class DisciplinaController implements ActionListener {
 				throw new Exception("Não foi encontrado nenhuma disciplina com o código informado!");
 			}
 
-			limpaCampos();
 		} catch (Exception e) {
 			txaTabelaDisciplinas.setText("");
 			txaTabelaDisciplinas.setText(e.getMessage());
@@ -491,10 +507,16 @@ public class DisciplinaController implements ActionListener {
 
 	}
 
-	private void atualizaComboBox() throws Exception {
-		String[] atualizaCursos = new CursoController().retornaCursos();
-		DefaultComboBoxModel<String> attComboBox = new DefaultComboBoxModel<>(atualizaCursos);
-		cbxCodigoCursoDisciplina.setModel(attComboBox);
+	public void atualizaComboBox() {
+		try {
+			String[] cursos = new CursoController().retornaCursos();
+
+			DefaultComboBoxModel<String> model = new DefaultComboBoxModel<>(cursos);
+			cbxCodigoCursoDisciplina.setModel(model);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 }
