@@ -50,11 +50,11 @@ public class CursoController implements ActionListener {
 
 			try {
 				Tela.atualizarComboBox();
-				limpaCampos();
+
 			} catch (Exception e1) {
 				e1.printStackTrace();
 			}
-
+			limpaCampos();
 		} else if (cmd.equals("Atualizar Curso")) {
 			atualizarCurso();
 
@@ -101,7 +101,7 @@ public class CursoController implements ActionListener {
 
 			File arq = new File(caminho, nomeArquivo);
 			if (!arq.exists()) {
-				conteudo.append("Código;Nome do Curso;Área de Conhecimento\n");
+				conteudo.append("Codigo;Nome do Curso;Area de Conhecimento\n");
 			}
 
 			conteudo.append(novoCurso.getCodigo());
@@ -232,7 +232,7 @@ public class CursoController implements ActionListener {
 				File arq = new File(caminho, nomeArquivo);
 
 				StringBuilder conteudo = new StringBuilder();
-				conteudo.append("Codigo;Nome;Área\n");
+				conteudo.append("Codigo;Nome do Curso;Area de Conhecimento\n");
 
 				while (!lista.isEmpty()) {
 					Curso remove = lista.get(0);
