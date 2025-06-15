@@ -59,7 +59,7 @@ public class ProfessorController implements ActionListener {
 			adicionarProfessor();
 
 			try {
-				new Tela().atualizarComboBox();
+				Tela.atualizarComboBox();
 				limpaCampos();
 			} catch (Exception e1) {
 			}
@@ -68,7 +68,7 @@ public class ProfessorController implements ActionListener {
 			atualizarProfessor();
 
 			try {
-				new Tela().atualizarComboBox();
+				Tela.atualizarComboBox();
 				limpaCampos();
 			} catch (Exception e1) {
 			}
@@ -77,7 +77,7 @@ public class ProfessorController implements ActionListener {
 			removerProfessor();
 
 			try {
-				new Tela().atualizarComboBox();
+				Tela.atualizarComboBox();
 				if (precisaConfirmacao == true)
 					limpaCampos();
 			} catch (Exception e1) {

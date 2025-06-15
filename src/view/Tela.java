@@ -34,10 +34,10 @@ public class Tela extends JFrame {
 	private JTextField txtNomeProfessor;
 	private JTextField txtPontuacaoProfessor;
 	private JTextField txtCodigoInscricao;
-	private DisciplinaController disciplinaController;
-	private ProfessorController professorController;
-	private InscricoesController inscricoesController;
-	private ProcessosAtivosController processosAtivosController;
+	private static DisciplinaController disciplinaController;
+	private static ProfessorController professorController;
+	private static InscricoesController inscricoesController;
+	private static ProcessosAtivosController processosAtivosController;
 
 	/**
 	 * Launch the application.
@@ -376,23 +376,22 @@ public class Tela extends JFrame {
 		btnRemoverCurso.addActionListener(cursoController);
 		btnConsultarCursoCod.addActionListener(cursoController);
 
-		disciplinaController = new DisciplinaController(txtCodigoDisciplina, txtNomeDisciplina,
-				cbxDiaSemanaDisciplina, cbxHorarioInicio, cbxCargaHoraria, cbxCodigoCursoDisciplina,
-				txaTabelaDisciplinas);
+		disciplinaController = new DisciplinaController(txtCodigoDisciplina, txtNomeDisciplina, cbxDiaSemanaDisciplina,
+				cbxHorarioInicio, cbxCargaHoraria, cbxCodigoCursoDisciplina, txaTabelaDisciplinas);
 		btnInserirDisciplina.addActionListener(disciplinaController);
 		btnAtualizarDisciplina.addActionListener(disciplinaController);
 		btnRemoverDisciplina.addActionListener(disciplinaController);
 		btnConsultarDisciplinaCod.addActionListener(disciplinaController);
 
-		professorController = new ProfessorController(txtCPFProfessor, txtNomeProfessor,
-				cbxAreaProfessor, txtPontuacaoProfessor, txaTabelaProfessores);
+		professorController = new ProfessorController(txtCPFProfessor, txtNomeProfessor, cbxAreaProfessor,
+				txtPontuacaoProfessor, txaTabelaProfessores);
 		btnInserirProfessor.addActionListener(professorController);
 		btnAtualizarProfessor.addActionListener(professorController);
 		btnRemoverProfessor.addActionListener(professorController);
 		btnConsultarProfessorCPF.addActionListener(professorController);
 
-		inscricoesController = new InscricoesController(txtCodigoInscricao,
-				cbxDisciplinasInscricao, cbxProfessoresInscricao, txaTabelaInscricoes);
+		inscricoesController = new InscricoesController(txtCodigoInscricao, cbxDisciplinasInscricao,
+				cbxProfessoresInscricao, txaTabelaInscricoes);
 		btnInserirInscricao.addActionListener(inscricoesController);
 		btnAtualizarInscricao.addActionListener(inscricoesController);
 		btnRemoverInscricao.addActionListener(inscricoesController);
@@ -403,7 +402,7 @@ public class Tela extends JFrame {
 
 	}
 
-	public void atualizarComboBox() {
+	public static void atualizarComboBox() {
 		disciplinaController.atualizaComboBox();
 		professorController.atualizaComboBox();
 		inscricoesController.atualizaComboBox();

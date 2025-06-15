@@ -65,7 +65,7 @@ public class DisciplinaController implements ActionListener {
 			adicionarDisciplina();
 
 			try {
-				new Tela().atualizarComboBox();
+				Tela.atualizarComboBox();
 			} catch (Exception e1) {
 				e1.printStackTrace();
 			}
@@ -74,7 +74,7 @@ public class DisciplinaController implements ActionListener {
 			atualizarDisciplina();
 
 			try {
-				new Tela().atualizarComboBox();
+				Tela.atualizarComboBox();
 			} catch (Exception e1) {
 				e1.printStackTrace();
 			}
@@ -83,7 +83,7 @@ public class DisciplinaController implements ActionListener {
 			removerDisciplina();
 
 			try {
-				new Tela().atualizarComboBox();
+				Tela.atualizarComboBox();
 				if (precisaConfirmacao == true)
 					limpaCampos();
 			} catch (Exception e1) {

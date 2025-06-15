@@ -56,7 +56,7 @@ public class InscricoesController implements ActionListener {
 			adicionarInscricao();
 
 			try {
-				new Tela().atualizarComboBox();
+				Tela.atualizarComboBox();
 				limpaCampos();
 			} catch (Exception e1) {
 			}
@@ -65,7 +65,7 @@ public class InscricoesController implements ActionListener {
 			atualizarInscricao();
 
 			try {
-				new Tela().atualizarComboBox();
+				Tela.atualizarComboBox();
 				limpaCampos();
 			} catch (Exception e1) {
 			}
@@ -74,7 +74,7 @@ public class InscricoesController implements ActionListener {
 			removerInscricao();
 
 			try {
-				new Tela().atualizarComboBox();
+				Tela.atualizarComboBox();
 				if (precisaConfirmacao == true)
 					limpaCampos();
 			} catch (Exception e1) {

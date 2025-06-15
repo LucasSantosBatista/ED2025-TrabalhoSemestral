@@ -49,7 +49,8 @@ public class CursoController implements ActionListener {
 			adicionarCurso();
 
 			try {
-				new Tela().atualizarComboBox();
+				Tela.atualizarComboBox();
+				limpaCampos();
 			} catch (Exception e1) {
 				e1.printStackTrace();
 			}
@@ -58,7 +59,7 @@ public class CursoController implements ActionListener {
 			atualizarCurso();
 
 			try {
-				new Tela().atualizarComboBox();
+				Tela.atualizarComboBox();
 			} catch (Exception e1) {
 				e1.printStackTrace();
 			}
@@ -67,7 +68,7 @@ public class CursoController implements ActionListener {
 			removerCurso();
 
 			try {
-				new Tela().atualizarComboBox();
+				Tela.atualizarComboBox();
 
 			} catch (Exception e1) {
 				e1.printStackTrace();
