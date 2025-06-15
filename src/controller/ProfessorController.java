@@ -9,6 +9,7 @@ import java.io.FileWriter;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;
 import javax.swing.JOptionPane;
 import javax.swing.JTextArea;
@@ -16,6 +17,7 @@ import javax.swing.JTextField;
 
 import br.lucassbatista.ed.FilaDinamica;
 import br.lucassbatista.ed.ListaEncadeada;
+import model.Inscricao;
 import model.Professor;
 
 public class ProfessorController implements ActionListener {
@@ -27,6 +29,7 @@ public class ProfessorController implements ActionListener {
 	private String caminho = System.getProperty("user.home") + File.separator + "LSB-TrabalhoSemestral"
 			+ File.separator;
 	private String nomeArquivo = "professores.csv";
+	private boolean precisaConfirmacao = true;
 
 	public ProfessorController() {
 		super();
@@ -35,6 +38,7 @@ public class ProfessorController implements ActionListener {
 	public ProfessorController(JTextField txtCPFProfessor, JTextArea txaTabelaProfessores) {
 		this.txtCPFProfessor = txtCPFProfessor;
 		this.txaTabelaProfessores = txaTabelaProfessores;
+		this.precisaConfirmacao = false;
 	}
 
 	public ProfessorController(JTextField txtCPFProfessor, JTextField txtNomeProfessor,
@@ -104,7 +108,7 @@ public class ProfessorController implements ActionListener {
 			txaTabelaProfessores.setText("Professor cadastrado com sucesso! \n" + novoProfessor.toString());
 
 			limpaCampos();
-
+			atualizaComboBox();
 		} catch (Exception e) {
 			txaTabelaProfessores.setText("");
 			txaTabelaProfessores.setText(e.getMessage());
@@ -178,6 +182,7 @@ public class ProfessorController implements ActionListener {
 						.setText("Dados do Professor atualizado com sucesso! \n" + novoProfessor.toString());
 
 				limpaCampos();
+				atualizaComboBox();
 			} else {
 				txaTabelaProfessores.setText("");
 				txaTabelaProfessores.setText("Operação de atualização interrompida!");
@@ -211,9 +216,15 @@ public class ProfessorController implements ActionListener {
 				throw new Exception("Professor não encontrado! Por favor verificar CPF ou cadastrar novo professor");
 			}
 
-			int confirmacao = JOptionPane.showConfirmDialog(null,
-					"Tem certeza que seja excluir este professor? A exclusão deletará também qualquer inscrição atrelada a ele!",
-					"Confirmação", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
+			int confirmacao = 0;
+
+			if (precisaConfirmacao == false) {
+				confirmacao = JOptionPane.YES_OPTION;
+			} else {
+				confirmacao = JOptionPane.showConfirmDialog(null,
+						"Tem certeza que seja excluir este professor? A exclusão deletará também qualquer inscrição atrelada a ele!",
+						"Confirmação", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
+			}
 
 			if (confirmacao == JOptionPane.YES_OPTION) {
 				File dir = new File(caminho);
@@ -245,9 +256,27 @@ public class ProfessorController implements ActionListener {
 				print.close();
 
 				txaTabelaProfessores.setText("");
-				txaTabelaProfessores.setText("Curso removido com sucesso! \n" + p.toString());
+				txaTabelaProfessores.setText("Professor removido do cadastro com sucesso! \n" + p.toString());
 
 				limpaCampos();
+				atualizaComboBox();
+				
+				if (precisaConfirmacao == false) {
+					ListaEncadeada<Inscricao> listaInscricoesApagar = new InscricoesController().listarInscricoes();
+					while (!listaInscricoesApagar.isEmpty()) {
+						Inscricao insc = listaInscricoesApagar.get(0);
+						if (insc.getCpfProfessor() == p.getCPF()) {
+							JTextField txtCodigoInscricao = new JTextField(String.valueOf(insc.getCodigoInscricao()));
+							InscricoesController inscricoesController = new InscricoesController(txtCodigoInscricao,
+									new JTextArea());
+
+							inscricoesController.actionPerformed(
+									new ActionEvent(this, ActionEvent.ACTION_PERFORMED, "Remover Inscrição"));
+						} else {
+							listaInscricoesApagar.removeFirst();
+						}
+					}
+				}
 			} else {
 				limpaCampos();
 				txaTabelaProfessores.setText("");
@@ -371,8 +400,8 @@ public class ProfessorController implements ActionListener {
 		}
 
 		// Campo Area
-		if (cbxAreaProfessor.getSelectedItem().toString().isBlank()) {
-			throw new Exception("Não há áreas disponiveis! Criar na aba curso e recarregar aplicação!");
+		if (cbxAreaProfessor.getSelectedItem() == null || cbxAreaProfessor.getSelectedItem().toString().isBlank()) {
+			throw new Exception("Não há áreas disponiveis ou nenhuma foi selecionada!");
 		}
 
 		// Campo Pontuacao
@@ -399,5 +428,33 @@ public class ProfessorController implements ActionListener {
 			throw new Exception("CPF inválido");
 		}
 		return true;
+	}
+
+	public String[] retornaProfessores() throws Exception {
+		ListaEncadeada<Professor> lista = listarProfessores();
+
+		String[] professores = new String[lista.size() + 1];
+
+		if (!lista.isEmpty()) {
+
+			for (int i = 0; i < professores.length; i++) {
+				if (i == 0) {
+					professores[i] = " ";
+				} else {
+					professores[i] = lista.get(i - 1).toString();
+				}
+			}
+
+			return professores;
+		} else {
+			return new String[] { "" };
+		}
+
+	}
+
+	public void atualizaComboBox() throws Exception {
+		String[] atualizaAreas = new CursoController().retornaAreas();
+		DefaultComboBoxModel<String> attComboBox = new DefaultComboBoxModel<>(atualizaAreas);
+		cbxAreaProfessor.setModel(attComboBox);
 	}
 }

@@ -41,7 +41,7 @@ public class Curso {
 
 	@Override
 	public String toString() {
-		return "[" + codigo + " | " + nome + " | " + area + "]";
+		return codigo + " | " + nome + " | " + area;
 	}
 
 }

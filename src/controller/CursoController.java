@@ -13,7 +13,6 @@ import javax.swing.JOptionPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
-import br.lucassbatista.AlgoritmosOrdenacao;
 import br.lucassbatista.ed.FilaDinamica;
 import br.lucassbatista.ed.ListaEncadeada;
 import model.Curso;
@@ -198,7 +197,7 @@ public class CursoController implements ActionListener {
 			}
 
 			int confirmacao = JOptionPane.showConfirmDialog(null,
-					"Tem certeza que seja excluir este curso? A exclusão deletará também qualquer disciplina atrelada a ele!",
+					"Tem certeza que seja excluir este curso? A exclusão deletará também qualquer disciplina, professor e inscrição atrelada a ele!",
 					"Confirmação", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
 
 			if (confirmacao == JOptionPane.YES_OPTION) {
@@ -228,13 +227,18 @@ public class CursoController implements ActionListener {
 				print.flush();
 				print.close();
 
+				txaTabelaCurso.setText("");
+				txaTabelaCurso.setText("Curso removido com sucesso! \n" + c.toString());
+
+				limpaCampos();
+
 				ListaEncadeada<Disciplina> listaDisciplinasApagar = new DisciplinaController().listarDisciplinas();
 				while (!listaDisciplinasApagar.isEmpty()) {
 					Disciplina d = listaDisciplinasApagar.get(0);
 					if (c.getCodigo() == d.getCodCursoDisciplina()) {
 						JTextField CodigoDisciplina = new JTextField(String.valueOf(d.getCodigo()));
 						DisciplinaController disciplinaController = new DisciplinaController(CodigoDisciplina,
-								new JTextArea());
+								new JTextArea(), c);
 
 						disciplinaController.actionPerformed(
 								new ActionEvent(this, ActionEvent.ACTION_PERFORMED, "Remover Disciplina"));
@@ -243,10 +247,6 @@ public class CursoController implements ActionListener {
 					}
 				}
 
-				txaTabelaCurso.setText("");
-				txaTabelaCurso.setText("Curso removido com sucesso! \n" + c.toString());
-
-				limpaCampos();
 			} else {
 				limpaCampos();
 				txaTabelaCurso.setText("");
@@ -390,27 +390,22 @@ public class CursoController implements ActionListener {
 		txtAreaCurso.setText("");
 	}
 
-	public String[] retornaCodCursos() throws Exception {
+	public String[] retornaCursos() throws Exception {
 		ListaEncadeada<Curso> lista = listarCursos();
 
+		String[] cursos = new String[lista.size() + 1];
+
 		if (!lista.isEmpty()) {
-			AlgoritmosOrdenacao algoritmosOrdenacao = new AlgoritmosOrdenacao();
 
-			int[] ordenar = new int[lista.size()];
-
-			for (int i = 0; i < ordenar.length; i++) {
-				Curso c = lista.get(i);
-				ordenar[i] = c.getCodigo();
+			for (int i = 0; i < cursos.length; i++) {
+				if (i == 0) {
+					cursos[i] = " ";
+				} else {
+					cursos[i] = lista.get(i - 1).toString();
+				}
 			}
 
-			ordenar = algoritmosOrdenacao.mergeSort(ordenar, 0, ordenar.length - 1);
-
-			String[] codigos = new String[ordenar.length];
-			for (int i = 0; i < ordenar.length; i++) {
-				codigos[i] = String.valueOf(ordenar[i]);
-			}
-
-			return codigos;
+			return cursos;
 		} else {
 			return new String[] { "" };
 		}
@@ -419,32 +414,37 @@ public class CursoController implements ActionListener {
 	public String[] retornaAreas() throws Exception {
 		ListaEncadeada<Curso> lista = listarCursos();
 
-		ListaEncadeada<String> listaAreas = new ListaEncadeada<>();
+		ListaEncadeada<String> listaAreas = new ListaEncadeada<String>();
 
 		if (!lista.isEmpty()) {
+			for (int i = 0; i < lista.size(); i++) {
+				String area = lista.get(i).getArea();
+				boolean existe = false;
 
-			while (!lista.isEmpty()) {
-				Curso c = lista.get(0);
-				lista.removeFirst();
+				for (int j = 0; j < listaAreas.size(); j++) {
+					String areaExistente = listaAreas.get(j);
 
-				boolean encontrada = false;
-				for (int i = 0; i < listaAreas.size(); i++) {
-					String area = listaAreas.get(i);
-					if (area.equals(c.getArea())) {
-						encontrada = true;
+					if (areaExistente != null && areaExistente.equals(area)) {
+						existe = true;
 						break;
 					}
 				}
 
-				if (!encontrada) {
-					listaAreas.addLast(c.getArea());
+				if (!existe) {
+					listaAreas.addLast(area);
 				}
 			}
 
-			String[] areas = new String[listaAreas.size()];
+			// Agora usa listaAreas, que só tem áreas únicas
+			String[] areas = new String[listaAreas.size() + 1];
+
 			for (int i = 0; i < areas.length; i++) {
-				areas[i] = listaAreas.get(0);
-				listaAreas.removeFirst();
+				if (i == 0) {
+					areas[i] = " ";
+				} else {
+					areas[i] = listaAreas.get(i - 1); // pega da lista de áreas únicas
+				}
+
 			}
 
 			return areas;

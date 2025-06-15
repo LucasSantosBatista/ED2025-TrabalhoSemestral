@@ -1,18 +1,19 @@
 package model;
 
-public class Inscricoes {
+public class Inscricao {
+	private int codigoInscricao;
 	private long cpfProfessor;
 	private int codigoDisciplina;
-	private int codigoProcesso;
 
-	public Inscricoes() {
+	public Inscricao() {
 		super();
 	}
 
-	public Inscricoes(long cpfProfessor, int codigoDisciplina, int codigoProcesso) {
+	public Inscricao(int codigoInscricao, long cpfProfessor, int codigoDisciplina) {
+		this.codigoInscricao = codigoInscricao;
 		this.cpfProfessor = cpfProfessor;
 		this.codigoDisciplina = codigoDisciplina;
-		this.codigoProcesso = codigoProcesso;
+
 	}
 
 	public long getCpfProfessor() {
@@ -31,17 +32,17 @@ public class Inscricoes {
 		this.codigoDisciplina = codigoDisciplina;
 	}
 
-	public int getCodigoProcesso() {
-		return codigoProcesso;
+	public int getCodigoInscricao() {
+		return codigoInscricao;
 	}
 
-	public void setCodigoProcesso(int codigoProcesso) {
-		this.codigoProcesso = codigoProcesso;
+	public void setCodigoInscricao(int codigoInscricao) {
+		this.codigoInscricao = codigoInscricao;
 	}
 
 	@Override
 	public String toString() {
-		return "[" + cpfProfessor + " | " + codigoDisciplina + " | " + codigoProcesso + "]";
+		return cpfProfessor + " | " + codigoDisciplina + " | " + codigoInscricao;
 	}
 
 }

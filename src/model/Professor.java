@@ -51,6 +51,6 @@ public class Professor {
 
 	@Override
 	public String toString() {
-		return "[" + CPF + " | " + nome + " | " + area + " | " + pontuacao + "]";
+		return CPF + " | " + nome + " | " + area + " | " + pontuacao;
 	}
 }

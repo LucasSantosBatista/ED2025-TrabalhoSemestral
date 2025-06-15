@@ -8,6 +8,7 @@ import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
@@ -16,6 +17,8 @@ import javax.swing.border.EmptyBorder;
 
 import controller.CursoController;
 import controller.DisciplinaController;
+import controller.InscricoesController;
+import controller.ProcessosAtivosController;
 import controller.ProfessorController;
 
 public class Tela extends JFrame {
@@ -30,6 +33,7 @@ public class Tela extends JFrame {
 	private JTextField txtCPFProfessor;
 	private JTextField txtNomeProfessor;
 	private JTextField txtPontuacaoProfessor;
+	private JTextField txtCodigoInscricao;
 
 	/**
 	 * Launch the application.
@@ -107,7 +111,7 @@ public class Tela extends JFrame {
 		tabCursos.add(btnConsultarCursoCod);
 
 		JTextArea txaTabelaCurso = new JTextArea();
-		txaTabelaCurso.setBounds(10, 222, 599, 161);
+		txaTabelaCurso.setBounds(10, 241, 599, 161);
 		tabCursos.add(txaTabelaCurso);
 
 		txtCodigoCurso = new JTextField();
@@ -211,8 +215,7 @@ public class Tela extends JFrame {
 		lblHorasaula.setBounds(299, 216, 83, 14);
 		tabDisciplinas.add(lblHorasaula);
 
-		JComboBox<String> cbxCodigoCursoDisciplina = new JComboBox<>(
-				new CursoController(txtCodigoCurso, txtNomeCurso, txtAreaCurso, txaTabelaCurso).retornaCodCursos());
+		JComboBox<String> cbxCodigoCursoDisciplina = new JComboBox<>(new CursoController().retornaCursos());
 		cbxCodigoCursoDisciplina.setBounds(149, 251, 140, 22);
 		tabDisciplinas.add(cbxCodigoCursoDisciplina);
 
@@ -275,8 +278,7 @@ public class Tela extends JFrame {
 		txtNomeProfessor.setBounds(163, 142, 255, 20);
 		tabProfessores.add(txtNomeProfessor);
 
-		JComboBox<String> cbxAreaProfessor = new JComboBox<String>(
-				new CursoController(txtCodigoCurso, txtNomeCurso, txtAreaCurso, txaTabelaCurso).retornaAreas());
+		JComboBox<String> cbxAreaProfessor = new JComboBox<String>(new CursoController().retornaAreas());
 		cbxAreaProfessor.setBounds(163, 188, 255, 20);
 		tabProfessores.add(cbxAreaProfessor);
 
@@ -296,54 +298,73 @@ public class Tela extends JFrame {
 
 		JLabel lblDisciplinasInscricao = new JLabel("Disciplinas: ");
 		lblDisciplinasInscricao.setHorizontalAlignment(SwingConstants.RIGHT);
-		lblDisciplinasInscricao.setBounds(10, 90, 79, 14);
+		lblDisciplinasInscricao.setBounds(10, 113, 79, 14);
 		tabInscricoes.add(lblDisciplinasInscricao);
 
 		JLabel lblProfessoresInscricao = new JLabel("Professores: ");
 		lblProfessoresInscricao.setHorizontalAlignment(SwingConstants.RIGHT);
-		lblProfessoresInscricao.setBounds(10, 162, 79, 14);
+		lblProfessoresInscricao.setBounds(10, 151, 79, 14);
 		tabInscricoes.add(lblProfessoresInscricao);
 
 		JTextArea txaTabelaInscricoes = new JTextArea();
 		txaTabelaInscricoes.setBounds(10, 194, 599, 196);
 		tabInscricoes.add(txaTabelaInscricoes);
 
-		JComboBox cbxDisciplinasInscricao = new JComboBox();
-		cbxDisciplinasInscricao.setBounds(104, 86, 245, 22);
+		JComboBox<String> cbxDisciplinasInscricao = new JComboBox<String>(
+				new DisciplinaController().retornaDisciplinas());
+		cbxDisciplinasInscricao.setBounds(104, 109, 245, 22);
 		tabInscricoes.add(cbxDisciplinasInscricao);
 
-		JComboBox cbxProfessoresInscricao = new JComboBox();
-		cbxProfessoresInscricao.setBounds(104, 158, 245, 22);
+		JComboBox<String> cbxProfessoresInscricao = new JComboBox<String>(
+				new ProfessorController().retornaProfessores());
+		cbxProfessoresInscricao.setBounds(104, 147, 245, 22);
 		tabInscricoes.add(cbxProfessoresInscricao);
 
-		JButton btnInscreverProfessorDisciplina = new JButton("Inscrever Professor em Disciplina");
-		btnInscreverProfessorDisciplina.setBounds(371, 128, 238, 23);
-		tabInscricoes.add(btnInscreverProfessorDisciplina);
+		JButton btnInserirInscricao = new JButton("Adicionar Inscricao");
+		btnInserirInscricao.setBounds(395, 58, 180, 23);
+		tabInscricoes.add(btnInserirInscricao);
 
-		JButton btnRemoverProfessorDisciplina = new JButton("Remover Professor de Disciplina");
-		btnRemoverProfessorDisciplina.setBounds(371, 158, 238, 23);
-		tabInscricoes.add(btnRemoverProfessorDisciplina);
+		JButton btnRemoverInscricao = new JButton("Remover Inscrição");
+		btnRemoverInscricao.setBounds(395, 126, 180, 23);
+		tabInscricoes.add(btnRemoverInscricao);
 
-		JButton btnConsultarProfessorDisciplina = new JButton("Consultar Professor da Disciplina");
-		btnConsultarProfessorDisciplina.setBounds(371, 86, 238, 23);
-		tabInscricoes.add(btnConsultarProfessorDisciplina);
+		JButton btnConsultarProfessorInscricao = new JButton("Consultar por Codigo");
+		btnConsultarProfessorInscricao.setBounds(395, 160, 180, 23);
+		tabInscricoes.add(btnConsultarProfessorInscricao);
 
-		JPanel tabConsultaGeral = new JPanel();
-		tabbedPane.addTab("Processos Ativos", null, tabConsultaGeral, null);
-		tabConsultaGeral.setLayout(null);
+		JLabel lblCodigoInscricao = new JLabel("Código: ");
+		lblCodigoInscricao.setHorizontalAlignment(SwingConstants.RIGHT);
+		lblCodigoInscricao.setBounds(10, 78, 79, 14);
+		tabInscricoes.add(lblCodigoInscricao);
+
+		txtCodigoInscricao = new JTextField();
+		txtCodigoInscricao.setBounds(104, 75, 245, 20);
+		tabInscricoes.add(txtCodigoInscricao);
+		txtCodigoInscricao.setColumns(10);
+
+		JButton btnAtualizarInscricao = new JButton("Atualizar Inscrição");
+		btnAtualizarInscricao.setBounds(395, 92, 180, 23);
+		tabInscricoes.add(btnAtualizarInscricao);
+
+		JPanel tabProcessosAtivos = new JPanel();
+		tabbedPane.addTab("Processos Ativos", null, tabProcessosAtivos, null);
+		tabProcessosAtivos.setLayout(null);
 
 		JTextArea txaTabelaProcessosAtivos = new JTextArea();
-		txaTabelaProcessosAtivos.setBounds(10, 85, 599, 317);
-		tabConsultaGeral.add(txaTabelaProcessosAtivos);
+
+		JScrollPane scrollPane = new JScrollPane(txaTabelaProcessosAtivos);
+		scrollPane.setBounds(10, 85, 599, 317); // mesmo tamanho e posição do JTextArea anterior
+
+		tabProcessosAtivos.add(scrollPane);
 
 		JLabel lblProcessosAtivos = new JLabel("Processos Ativos");
 		lblProcessosAtivos.setFont(new Font("Tahoma", Font.PLAIN, 20));
 		lblProcessosAtivos.setBounds(10, 11, 158, 25);
-		tabConsultaGeral.add(lblProcessosAtivos);
+		tabProcessosAtivos.add(lblProcessosAtivos);
 
 		JButton btnAtualizarProcessosAtivos = new JButton("Atualizar");
 		btnAtualizarProcessosAtivos.setBounds(10, 47, 89, 23);
-		tabConsultaGeral.add(btnAtualizarProcessosAtivos);
+		tabProcessosAtivos.add(btnAtualizarProcessosAtivos);
 
 		CursoController cursoController = new CursoController(txtCodigoCurso, txtNomeCurso, txtAreaCurso,
 				txaTabelaCurso);
@@ -366,6 +387,16 @@ public class Tela extends JFrame {
 		btnAtualizarProfessor.addActionListener(professorController);
 		btnRemoverProfessor.addActionListener(professorController);
 		btnConsultarProfessorCPF.addActionListener(professorController);
+
+		InscricoesController inscricoesController = new InscricoesController(txtCodigoInscricao,
+				cbxDisciplinasInscricao, cbxProfessoresInscricao, txaTabelaInscricoes);
+		btnInserirInscricao.addActionListener(inscricoesController);
+		btnAtualizarInscricao.addActionListener(inscricoesController);
+		btnRemoverInscricao.addActionListener(inscricoesController);
+		btnConsultarProfessorInscricao.addActionListener(inscricoesController);
+
+		ProcessosAtivosController processosAtivosController = new ProcessosAtivosController(txaTabelaProcessosAtivos);
+		btnAtualizarProcessosAtivos.addActionListener(processosAtivosController);
 
 	}
 }

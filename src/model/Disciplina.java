@@ -7,8 +7,7 @@ public class Disciplina {
 	private String horarioInicio;
 	private double cargaHoraria;
 	private int codCursoDisciplina;
-	private static int codProcesso;
-
+	
 	public Disciplina() {
 		super();
 	}
@@ -72,14 +71,10 @@ public class Disciplina {
 		this.codCursoDisciplina = codCurso;
 	}
 
-	public int getCodProcesso() {
-		return codProcesso;
-	}
-
 	@Override
 	public String toString() {
-		return "[" + codigo + " | " + nome + " | " + diaSemana + " | " + horarioInicio + " | " + cargaHoraria + " hrs/aula | Curso "
-				+ codCursoDisciplina + " | " + codProcesso + "]";
+		return codigo + " | " + nome + " | " + diaSemana + " | " + horarioInicio + " | " + cargaHoraria + " hrs/aula | Curso "
+				+ codCursoDisciplina;
 
 	}
 }
