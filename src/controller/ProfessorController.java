@@ -169,7 +169,7 @@ public class ProfessorController implements ActionListener {
 			}
 
 			int confirmacao = JOptionPane.showConfirmDialog(null,
-					"Tem certeza que seja atualizar dados este professor?", "Confirmação", JOptionPane.YES_NO_OPTION,
+					"Tem certeza que deseja atualizar dados este professor?", "Confirmação", JOptionPane.YES_NO_OPTION,
 					JOptionPane.WARNING_MESSAGE);
 
 			if (confirmacao == JOptionPane.YES_OPTION) {
@@ -224,8 +224,8 @@ public class ProfessorController implements ActionListener {
 
 			ListaEncadeada<Professor> lista = listarProfessores();
 			boolean houveAtualizacao = false;
-
 			Professor p = new Professor();
+
 			for (int i = 0; i < lista.size(); i++) {
 				p = lista.get(i);
 				if (p.getCPF() == cpf) {
@@ -235,41 +235,27 @@ public class ProfessorController implements ActionListener {
 				}
 			}
 
-			if (houveAtualizacao == false) {
+			if (!houveAtualizacao) {
 				throw new Exception("Professor não encontrado! Por favor verificar CPF ou cadastrar novo professor");
 			}
 
-			int confirmacao = 0;
-
-			if (precisaConfirmacao == false) {
-				confirmacao = JOptionPane.YES_OPTION;
-			} else {
-				confirmacao = JOptionPane.showConfirmDialog(null,
-						"Tem certeza que seja excluir este professor? A exclusão deletará também qualquer inscrição atrelada a ele!",
-						"Confirmação", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
-			}
+			int confirmacao = precisaConfirmacao ? JOptionPane.showConfirmDialog(null,
+					"Tem certeza que deseja excluir este professor? A exclusão deletará também qualquer inscrição atrelada a ele!",
+					"Confirmação", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE) : JOptionPane.YES_OPTION;
 
 			if (confirmacao == JOptionPane.YES_OPTION) {
 				File dir = new File(caminho);
-				if (!dir.exists()) {
+				if (!dir.exists())
 					dir.mkdir();
-				}
 
 				File arq = new File(caminho, nomeArquivo);
-
 				StringBuilder conteudo = new StringBuilder();
 				conteudo.append("CPF;Nome Completo;Area de Conhecimento;Pontuacao;\n");
 
 				while (!lista.isEmpty()) {
 					Professor remove = lista.get(0);
-					conteudo.append(remove.getCPF());
-					conteudo.append(";");
-					conteudo.append(remove.getNome());
-					conteudo.append(";");
-					conteudo.append(remove.getArea());
-					conteudo.append(";");
-					conteudo.append(remove.getPontuacao());
-					conteudo.append("\n");
+					conteudo.append(remove.getCPF()).append(";").append(remove.getNome()).append(";")
+							.append(remove.getArea()).append(";").append(remove.getPontuacao()).append("\n");
 					lista.removeFirst();
 				}
 
@@ -281,9 +267,7 @@ public class ProfessorController implements ActionListener {
 				txaTabelaProfessores.setText("");
 				txaTabelaProfessores.setText("Professor removido do cadastro com sucesso! \n" + p.toString());
 
-				
 			} else {
-
 				txaTabelaProfessores.setText("");
 				txaTabelaProfessores.setText("Operação de exclusão interrompida!");
 			}
@@ -292,7 +276,6 @@ public class ProfessorController implements ActionListener {
 			txaTabelaProfessores.setText("");
 			txaTabelaProfessores.setText(e.getMessage());
 		}
-
 	}
 
 	private void consultarProfessorPorCPF() {

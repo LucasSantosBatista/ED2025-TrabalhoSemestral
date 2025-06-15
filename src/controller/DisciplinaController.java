@@ -183,7 +183,7 @@ public class DisciplinaController implements ActionListener {
 				throw new Exception("Disciplina não encontrada! Por favor verificar código ou criar nova disciplina");
 			}
 
-			int confirmacao = JOptionPane.showConfirmDialog(null, "Tem certeza que seja atualizar esta disciplina?",
+			int confirmacao = JOptionPane.showConfirmDialog(null, "Tem certeza que deseja atualizar esta disciplina?",
 					"Confirmação", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
 
 			if (confirmacao == JOptionPane.YES_OPTION) {
@@ -242,8 +242,8 @@ public class DisciplinaController implements ActionListener {
 
 			ListaEncadeada<Disciplina> lista = listarDisciplinas();
 			boolean houveAtualizacao = false;
-
 			Disciplina d = new Disciplina();
+
 			for (int i = 0; i < lista.size(); i++) {
 				d = lista.get(i);
 				if (d.getCodigo() == cod) {
@@ -253,46 +253,30 @@ public class DisciplinaController implements ActionListener {
 				}
 			}
 
-			if (houveAtualizacao == false) {
+			if (!houveAtualizacao) {
 				throw new Exception("Disciplina não encontrada! Por favor verificar código ou criar nova disciplina");
 			}
 
-			int confirmacao = 0;
-
-			if (precisaConfirmacao == false) {
-				confirmacao = JOptionPane.YES_OPTION;
-			} else {
-				confirmacao = JOptionPane.showConfirmDialog(null,
-						"Tem certeza que seja excluir esta disciplina? A exclusão deletará também qualquer professor e inscrição atrelada a ele!",
-						"Confirmação", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
-			}
+			int confirmacao = precisaConfirmacao ? JOptionPane.showConfirmDialog(null,
+					"Tem certeza que deseja excluir esta disciplina? A exclusão deletará também qualquer professor e inscrição atrelada a ela!",
+					"Confirmação", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE) : JOptionPane.YES_OPTION;
 
 			if (confirmacao == JOptionPane.YES_OPTION) {
 				File dir = new File(caminho);
-				if (!dir.exists()) {
+				if (!dir.exists())
 					dir.mkdir();
-				}
 
 				File arq = new File(caminho, nomeArquivo);
-
 				StringBuilder conteudo = new StringBuilder();
 				conteudo.append(
 						"Codigo;Nome da Disciplina;Dia da Semana;Horario de Inicio;Carga Horaria (hrs/aula);Codigo do Curso\n");
 
 				while (!lista.isEmpty()) {
 					Disciplina remove = lista.get(0);
-					conteudo.append(remove.getCodigo());
-					conteudo.append(";");
-					conteudo.append(remove.getNome());
-					conteudo.append(";");
-					conteudo.append(remove.getDiaSemana());
-					conteudo.append(";");
-					conteudo.append(remove.getHorarioInicio());
-					conteudo.append(";");
-					conteudo.append(remove.getCargaHoraria());
-					conteudo.append(";");
-					conteudo.append(remove.getCodCursoDisciplina());
-					conteudo.append("\n");
+					conteudo.append(remove.getCodigo()).append(";").append(remove.getNome()).append(";")
+							.append(remove.getDiaSemana()).append(";").append(remove.getHorarioInicio()).append(";")
+							.append(remove.getCargaHoraria()).append(";").append(remove.getCodCursoDisciplina())
+							.append("\n");
 					lista.removeFirst();
 				}
 
@@ -302,12 +286,12 @@ public class DisciplinaController implements ActionListener {
 				print.close();
 
 				txaTabelaDisciplinas.setText("");
-				txaTabelaDisciplinas.setText("Curso removido com sucesso! \n" + d.toString());
+				txaTabelaDisciplinas.setText("Disciplina removida com sucesso! \n" + d.toString());
 
-				if (precisaConfirmacao == false) {
+				if (!precisaConfirmacao) {
 					ListaEncadeada<Inscricao> listaInscricoesApagar = new InscricoesController().listarInscricoes();
-					while (!listaInscricoesApagar.isEmpty()) {
-						Inscricao insc = listaInscricoesApagar.get(0);
+					for (int i = listaInscricoesApagar.size() - 1; i >= 0; i--) {
+						Inscricao insc = listaInscricoesApagar.get(i);
 						if (insc.getCodigoDisciplina() == d.getCodigo()) {
 							JTextField txtCodigoInscricao = new JTextField(String.valueOf(insc.getCodigoInscricao()));
 							InscricoesController inscricoesController = new InscricoesController(txtCodigoInscricao,
@@ -315,13 +299,10 @@ public class DisciplinaController implements ActionListener {
 
 							inscricoesController.actionPerformed(
 									new ActionEvent(this, ActionEvent.ACTION_PERFORMED, "Remover Inscrição"));
-						} else {
-							listaInscricoesApagar.removeFirst();
 						}
 					}
 				}
 			} else {
-
 				txaTabelaDisciplinas.setText("");
 				txaTabelaDisciplinas.setText("Operação de exclusão interrompida!");
 			}
@@ -330,7 +311,6 @@ public class DisciplinaController implements ActionListener {
 			txaTabelaDisciplinas.setText("");
 			txaTabelaDisciplinas.setText(e.getMessage());
 		}
-
 	}
 
 	private void consultarDisciplinaPorCodigo() {

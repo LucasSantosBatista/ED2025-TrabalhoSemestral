@@ -166,7 +166,7 @@ public class InscricoesController implements ActionListener {
 			}
 
 			int confirmacao = JOptionPane.showConfirmDialog(null,
-					"Tem certeza que seja atualizar dados esta inscrição?", "Confirmação", JOptionPane.YES_NO_OPTION,
+					"Tem certeza que deseja atualizar dados esta inscrição?", "Confirmação", JOptionPane.YES_NO_OPTION,
 					JOptionPane.WARNING_MESSAGE);
 
 			if (confirmacao == JOptionPane.YES_OPTION) {
@@ -239,7 +239,7 @@ public class InscricoesController implements ActionListener {
 			if (precisaConfirmacao == false) {
 				confirmacao = JOptionPane.YES_OPTION;
 			} else {
-				confirmacao = JOptionPane.showConfirmDialog(null, "Tem certeza que seja excluir esta inscrição?",
+				confirmacao = JOptionPane.showConfirmDialog(null, "Tem certeza que deseja excluir esta inscrição?",
 						"Confirmação", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
 			}
 
@@ -272,30 +272,25 @@ public class InscricoesController implements ActionListener {
 
 				txaTabelaInscricoes.setText("");
 				txaTabelaInscricoes.setText("Inscrição removida com sucesso! \n" + insc.toString());
-				
+
 				if (precisaConfirmacao == false) {
 					ListaEncadeada<Professor> listaProfessoresApagar = new ProfessorController().listarProfessores();
-					while (!listaProfessoresApagar.isEmpty()) {
-						Professor p = listaProfessoresApagar.get(0);
-						if (insc.getCpfProfessor() == p.getCPF()) {
+					for (int i = listaProfessoresApagar.size() - 1; i >= 0; i--) {
+						Professor p = listaProfessoresApagar.get(i);
+						if (insc.getCpfProfessor()== p.getCPF()) {
 							JTextField txtCPFProfessor = new JTextField(String.valueOf(p.getCPF()));
 							ProfessorController professorController = new ProfessorController(txtCPFProfessor,
 									new JTextArea());
 
 							professorController.actionPerformed(
 									new ActionEvent(this, ActionEvent.ACTION_PERFORMED, "Remover Professor"));
-						} else {
-							listaProfessoresApagar.removeFirst();
 						}
 					}
 				}
-
 			} else {
-
 				txaTabelaInscricoes.setText("");
 				txaTabelaInscricoes.setText("Operação de exclusão interrompida!");
 			}
-
 		} catch (Exception e) {
 			txaTabelaInscricoes.setText("");
 			txaTabelaInscricoes.setText(e.getMessage());

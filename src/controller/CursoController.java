@@ -203,8 +203,8 @@ public class CursoController implements ActionListener {
 
 			ListaEncadeada<Curso> lista = listarCursos();
 			boolean houveAtualizacao = false;
-
 			Curso c = new Curso();
+
 			for (int i = 0; i < lista.size(); i++) {
 				c = lista.get(i);
 				if (c.getCodigo() == cod) {
@@ -214,12 +214,12 @@ public class CursoController implements ActionListener {
 				}
 			}
 
-			if (houveAtualizacao == false) {
+			if (!houveAtualizacao) {
 				throw new Exception("Curso não encontrado! Por favor verificar código ou criar novo curso");
 			}
 
 			int confirmacao = JOptionPane.showConfirmDialog(null,
-					"Tem certeza que seja excluir este curso? A exclusão deletará também qualquer disciplina, professor e inscrição atrelada a ele!",
+					"Tem certeza que deseja excluir este curso? A exclusão deletará também qualquer disciplina, professor e inscrição atrelada a ele!",
 					"Confirmação", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
 
 			if (confirmacao == JOptionPane.YES_OPTION) {
@@ -231,16 +231,13 @@ public class CursoController implements ActionListener {
 				File arq = new File(caminho, nomeArquivo);
 
 				StringBuilder conteudo = new StringBuilder();
-				conteudo.append("Codigo;Nome do Curso;Area de Conhecimento\n");
+				conteudo.append("Codigo;Nome;Área\n");
 
 				while (!lista.isEmpty()) {
 					Curso remove = lista.get(0);
-					conteudo.append(remove.getCodigo());
-					conteudo.append(";");
-					conteudo.append(remove.getNome());
-					conteudo.append(";");
-					conteudo.append(remove.getArea());
-					conteudo.append("\n");
+					conteudo.append(remove.getCodigo()).append(";");
+					conteudo.append(remove.getNome()).append(";");
+					conteudo.append(remove.getArea()).append("\n");
 					lista.removeFirst();
 				}
 
@@ -253,9 +250,9 @@ public class CursoController implements ActionListener {
 				txaTabelaCurso.setText("Curso removido com sucesso! \n" + c.toString());
 
 				ListaEncadeada<Disciplina> listaDisciplinasApagar = new DisciplinaController().listarDisciplinas();
-				while (!listaDisciplinasApagar.isEmpty()) {
-					Disciplina d = listaDisciplinasApagar.get(0);
-					if (c.getCodigo() == d.getCodCursoDisciplina()) {
+				for (int i = listaDisciplinasApagar.size() - 1; i >= 0; i--) {
+					Disciplina d = listaDisciplinasApagar.get(i);
+					if (d.getCodCursoDisciplina() == c.getCodigo()) {
 						JTextField CodigoDisciplina = new JTextField(String.valueOf(d.getCodigo()));
 						DisciplinaController disciplinaController = new DisciplinaController(CodigoDisciplina,
 								new JTextArea());
@@ -263,11 +260,9 @@ public class CursoController implements ActionListener {
 						disciplinaController.actionPerformed(
 								new ActionEvent(this, ActionEvent.ACTION_PERFORMED, "Remover Disciplina"));
 					}
-					listaDisciplinasApagar.removeFirst();
 				}
 
 			} else {
-
 				txaTabelaCurso.setText("");
 				txaTabelaCurso.setText("Operação de exclusão interrompida!");
 			}
@@ -276,7 +271,6 @@ public class CursoController implements ActionListener {
 			txaTabelaCurso.setText("");
 			txaTabelaCurso.setText(e.getMessage());
 		}
-
 	}
 
 	private void consultarCursoPorCodigo() {
